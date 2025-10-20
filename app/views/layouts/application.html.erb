@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RecipeBook</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "custom", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <style>
+      body { background-color: #0d0d0d; color: #f0f0f0; font-family: 'Segoe UI', sans-serif; }
+      .navbar { background: linear-gradient(90deg, #6a00ff, #ff00cc); box-shadow: 0 0 12px #ff00cc; }
+      .navbar-brand { font-weight: 800; color: #fff !important; text-shadow: 0 0 10px #ff00cc; }
+      .nav-link { color: #fff !important; transition: 0.3s; }
+      .nav-link:hover { color: #00ffff !important; text-shadow: 0 0 10px #00ffff; }
+      .admin-badge { background-color: #ffcc00; color: #000; font-weight: bold; border-radius: 8px; padding: 4px 8px; margin-left: 10px; font-size: 0.9em; }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg" 
+     style="background: linear-gradient(90deg, #6a00ff, #ff00cc); box-shadow: 0 0 20px #ff00cc;margin-bottom: 40px;">
+  <div class="container">
+    <%= link_to " RecipeBook", root_path, 
+        class: "navbar-brand fw-bold text-light", 
+        style: "text-shadow: 0 0 8px #fff, 0 0 20px #ff00cc;" %>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbarNav" class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <%= link_to "Recipes", recipes_path, 
+              class: "nav-link text-light fw-semibold", 
+              style: "transition: all 0.3s; text-shadow: 0 0 10px #00ffff;" %>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav">
+  <% if user_signed_in? %>
+    <li class="nav-item me-3 d-flex align-items-center">
+      <% if current_user.admin? %>
+        <span class="badge me-2" 
+              style="background: linear-gradient(90deg, #ff00cc, #ff8800);
+                     color: white;
+                     text-shadow: 0 0 10px #fff;
+                     box-shadow: 0 0 10px #ff00cc;
+                     font-weight: bold;">
+          ⭐ Admin
+        </span>
+      <% end %>
+      <span class="nav-link text-light" style="text-shadow: 0 0 8px #ffffff;">
+        👤 <%= current_user.email %>
+      </span>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Logout", destroy_user_session_path, 
+          data: { turbo_method: :delete },
+          class: "nav-link fw-semibold", 
+          style: "color:#ff5555; text-shadow: 0 0 10px #ff5555; transition: all 0.3s;" %>
+    </li>
+  <% else %>
+    <li class="nav-item">
+      <%= link_to "Sign Up", new_user_registration_path, 
+          class: "nav-link fw-semibold", 
+          style: "color:#00ff7f; text-shadow: 0 0 10px #00ff7f; transition: all 0.3s;" %>
+    </li>
+    <li class="nav-item ms-3">
+      <%= link_to "Login", new_user_session_path, 
+          class: "nav-link fw-semibold", 
+          style: "color:#00ffff; text-shadow: 0 0 10px #00ffff; transition: all 0.3s;" %>
+    </li>
+  <% end %>
+</ul>
+
+    </div>
+  </div>
+</nav>
+
+
+    <div class="container">
+      <% if notice %>
+        <div class="alert alert-info"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="alert alert-danger"><%= alert %></div>
+      <% end %>
+      <%= yield %>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

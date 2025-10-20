@@ -1,0 +1,16 @@
+# config/database.yml (fragmento)
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: 127.0.0.1
+  username: postgres
+  password: 12345
+
+development:
+  <<: *default
+  database: recipe_book_development
+
+test:
+  <<: *default
+  database: recipe_book_test

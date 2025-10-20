@@ -1,0 +1,51 @@
+<h1 class="mb-4 text-center text-light">Recipes</h1>
+
+<% if can? :create, Recipe %>
+  <div class="mb-3 text-center">
+    <%= link_to "New Recipe", new_recipe_path, 
+        class: "btn btn-lg",
+        style: "background-color:#7D3CFF; color:#fff; border:none; box-shadow:0 0 15px #7D3CFF; font-weight:bold;" %>
+  </div>
+<% end %>
+
+<table class="table table-dark table-hover align-middle shadow-lg rounded-3 overflow-hidden" style="background-color:#1A1633;">
+  <thead style="background-color:#111; color:#00FFFF;">
+    <tr>
+      <th>Title</th>
+      <th>Cook time (min)</th>
+      <th>Difficulty</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @recipes.each do |recipe| %>
+      <tr>
+        <td class="text-light"><%= recipe.title %></td>
+        <td class="text-light"><%= recipe.cook_time %></td>
+        <td class="text-light"><%= recipe.difficulty %></td>
+        <td class="text-end">
+     
+          <%= link_to "SHOW", recipe, 
+              class: "btn btn-sm",
+              style: "background-color:#00FFFF; color:#000; border:none; box-shadow:0 0 15px #00FFFF; font-weight:bold;" %>
+
+          <!-- EDIT -->
+          <% if can? :update, recipe %>
+            <%= link_to "EDIT", edit_recipe_path(recipe), 
+                class: "btn btn-sm ms-2",
+                style: "background-color:#00FF7F; color:#000; border:none; box-shadow:0 0 15px #00FF7F; font-weight:bold;" %>
+          <% end %>
+
+          <!-- DELETE -->
+          <% if can? :destroy, recipe %>
+            <%= link_to "DELETE", recipe,
+                data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+                class: "btn btn-sm ms-2",
+                style: "background-color:#FF4500; color:#000; border:none; box-shadow:0 0 15px #FF4500; font-weight:bold;" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
