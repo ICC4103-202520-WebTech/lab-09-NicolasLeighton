@@ -52,6 +52,73 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_060715) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "badges", force: :cascade do |t|
+    t.string "name"
+    t.string "logo"
+    t.string "badge_type"
+    t.text "description"
+    t.text "requirement"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "challenge_badges", force: :cascade do |t|
+    t.bigint "challenge_id", null: false
+    t.bigint "badge_id", null: false
+    t.text "requirement"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_challenge_badges_on_badge_id"
+    t.index ["challenge_id", "badge_id"], name: "index_challenge_badges_on_challenge_id_and_badge_id", unique: true
+    t.index ["challenge_id"], name: "index_challenge_badges_on_challenge_id"
+  end
+
+  create_table "challenges", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.date "start_day"
+    t.date "end_day"
+    t.text "point_rules"
+    t.bigint "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_challenges_on_creator_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "message"
+    t.boolean "read"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "participations", force: :cascade do |t|
+    t.bigint "challenge_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "points"
+    t.date "date_start"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_id", "user_id"], name: "index_participations_on_challenge_id_and_user_id", unique: true
+    t.index ["challenge_id"], name: "index_participations_on_challenge_id"
+    t.index ["user_id"], name: "index_participations_on_user_id"
+  end
+
+  create_table "progress_entries", force: :cascade do |t|
+    t.bigint "challenge_id", null: false
+    t.bigint "user_id", null: false
+    t.date "date"
+    t.integer "points"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_id", "user_id", "date"], name: "index_progress_entries_on_challenge_id_and_user_id_and_date"
+    t.index ["challenge_id"], name: "index_progress_entries_on_challenge_id"
+    t.index ["user_id"], name: "index_progress_entries_on_user_id"
+  end
+
   create_table "recipes", force: :cascade do |t|
     t.string "title"
     t.integer "cook_time"
@@ -60,6 +127,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_060715) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_recipes_on_user_id"
+  end
+
+  create_table "user_badges", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "badge_id", null: false
+    t.datetime "awarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_user_badges_on_badge_id"
+    t.index ["user_id", "badge_id"], name: "index_user_badges_on_user_id_and_badge_id", unique: true
+    t.index ["user_id"], name: "index_user_badges_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -77,5 +155,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_060715) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "challenge_badges", "badges"
+  add_foreign_key "challenge_badges", "challenges"
+  add_foreign_key "participations", "challenges"
+  add_foreign_key "progress_entries", "challenges"
   add_foreign_key "recipes", "users"
+  add_foreign_key "user_badges", "badges"
 end
